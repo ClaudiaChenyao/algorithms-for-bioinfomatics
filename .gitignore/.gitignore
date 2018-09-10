@@ -1,0 +1,156 @@
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class DivideEvenly 
+{
+
+    public static void main(String[] args) 
+    {
+        //initialize some variables
+        int[] arrayNumber = {1,3,6,4,8,12,34,64};
+        
+        //print out a notice message
+        System.out.print("The integers are: ");
+        //print out the integers in the arrayNumber
+        for(int a: arrayNumber)
+        {
+        	System.out.print("" + a + ", ");
+        }
+        
+        System.out.println("\n");
+        
+        int arrayLength = arrayNumber.length;
+        int sum = 0;
+        //get the total sum of the array
+        for(int i : arrayNumber)
+        {
+            sum += i;
+        }
+        //get the half of the sum and it will be used later
+        int halfSum = sum/2;
+        
+        //get the number of solutions of based the arrayNumber
+        int solutions = (int) Math.pow(2,arrayLength); 
+        
+        //get solutions in binary format and store them in an array
+        //initialize an array to contain the binary information
+        String[] arrayBinary = new String[solutions];
+        for(int i = 0;i< solutions; i++)
+        {
+            //change the decimalism to binary system
+        	String binaryInteger = Integer.toBinaryString(i);
+        	//get the binary system in same length by adding 0 in the left
+            int binaryIntegerLength = binaryInteger.length();
+            for(int j = 0;j<(arrayLength -binaryIntegerLength); j++)
+            {
+                binaryInteger = "0" + binaryInteger;
+            }
+            //assign the binaryInteger to the arrayBinary array
+            arrayBinary[i] = binaryInteger;
+        }
+        
+        //get the sum of each solution and store them in an array
+        /*
+         * initialize an empty array named sumOfSubArray to contain
+         *  the sum of each situation
+         */
+        int[] sumOfSubArray = new int[solutions];
+        for(int n = 0; n < solutions; n++)
+        {
+            int sumSubarray = 0;
+            //get the choice: choosing or not choosing of each item of arrayNumbe
+            for(int m = 0;m < arrayLength;m++)
+            {
+                char ch = arrayBinary[n].charAt(m);
+                
+                //0 means no choosing item, 1 means choosing item
+                //when choice is 1, it means the integer is chosen
+                if(ch == '1')
+                {
+                    //add the chosen integer to the sumSubarray
+                	sumSubarray += arrayNumber[m];
+                }   
+            }
+            //assign the sumSubarray to the array of sumOfSubArray
+            sumOfSubArray[n] = sumSubarray;
+        }
+        
+        //get the difference of each solution and store them in an array
+        int[] difference = new int[solutions];
+        for(int o =0; o< solutions; o++)
+        {
+            difference[o] = Math.abs(sumOfSubArray[o] -halfSum );
+        }
+        
+        //get the smallest difference
+        int smallestDifference = halfSum;
+        for(int p = 0; p < solutions; p++)
+        {
+            if(difference[p] < smallestDifference)
+            {
+                smallestDifference = difference[p];
+            }
+        }
+        
+        /*
+         * By comparing the smallerst difference with the difference 
+         * of each situation, we get the smaller index of the result.
+         * The result has two same difference, and they are complementary,
+         * we only need to find the smaller one.
+         */
+        int smallerIndex = -1;
+        for(int q = 0; q< solutions; q++)
+        {
+            if(difference[q] == smallestDifference)
+            {
+                smallerIndex = q;
+                break;
+            }
+        }
+        
+        //store the pattern of the smallerIndex
+        String pattern = arrayBinary[smallerIndex];
+        
+        Set subSetOne=new HashSet();
+        Set subSetTwo = new HashSet();
+         
+        //distrubte the integers into two subSets
+        for(int r = 0;r < arrayLength;r++)
+        {
+            char intergerFinal =pattern.charAt(r);
+            
+            if(intergerFinal == '0')
+            {
+                subSetOne.add(arrayNumber[r]);
+            }
+            else
+            {
+                subSetTwo.add(arrayNumber[r]);
+            }       
+        }
+        
+        //print out a notice message
+        System.out.println("The following are the two subsets:");
+        
+        //print out two subsets
+        System.out.print("The sub set one contains: ");
+        for( Iterator it = subSetOne.iterator(); it.hasNext(); )
+        {             
+            System.out.print("" + it.next().toString() + ",");            
+        } 
+        
+        System.out.print("\n");
+        
+        System.out.print("The sub set two contains: ");
+        for( Iterator it = subSetTwo.iterator();  it.hasNext(); )
+        {             
+            System.out.print("" + it.next().toString() + ",");            
+        } 
+        
+        System.out.print("\n\n");
+        System.out.println("The difference between two subsets is " + smallestDifference);
+
+    }
+}
+
